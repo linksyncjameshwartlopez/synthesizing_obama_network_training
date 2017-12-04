@@ -7,7 +7,7 @@ import struct
 import argparse
 import time
 import os
-import cPickle
+import _pickle as cPickle
 import random
 import platform
 import glob
@@ -23,7 +23,8 @@ def readSingleInt(path):
     return int(f.readline())
 
 def readCVFloatMat(fl):
-  f = open(fl)
+  print("(readCVFloatMat) File name : "+fl)
+  f = open(fl, 'rb')
   t = struct.unpack('B', f.read(1))[0]
   if t != 5:
     return 0
@@ -123,7 +124,7 @@ class TFBase(object):
       data_file = "data/training_" + self.args.save_dir + ".cpkl"
 
     if not (os.path.exists(data_file)) or self.args.reprocess:
-      print "creating training data cpkl file from raw source"
+      print ("creating training data cpkl file from raw source")
       inps, outps = self.preprocess(data_file)
 
       meani, stdi, meano, stdo = self.normalize(inps, outps)
@@ -205,7 +206,7 @@ class TFBase(object):
 
     ckpt = tf.train.get_checkpoint_state("save/" + save_dir)
     saver.restore(sess, ckpt.model_checkpoint_path)
-    print "loading model: ", ckpt.model_checkpoint_path
+    print ("loading model: ", ckpt.model_checkpoint_path)
 
     saved_args.input = self.args.input
 
@@ -221,7 +222,7 @@ class TFBase(object):
       tf.initialize_all_variables().run()
       ts = TrainingStatus(sess, self.args.num_epochs, self.num_batches["training"], save_interval = self.args.save_every, graph = sess.graph, save_dir = "save/" + self.args.save_dir)
 
-      print "training batches: ", self.num_batches["training"]
+      print ("training batches: ", self.num_batches["training"])
       for e in xrange(ts.startEpoch, self.args.num_epochs):
         sess.run(tf.assign(self.lr, self.args.learning_rate * (self.args.decay_rate ** e)))
         self.reset_batch_pointer("training")
@@ -250,7 +251,7 @@ class TFBase(object):
           res = sess.run(fetches, feed_dict)
           train_loss = res[0]
 
-          print ts.tocBatch(e, b, train_loss)
+          print (ts.tocBatch(e, b, train_loss))
 
         validLoss = 0
         if self.num_batches["validation"] > 0:
@@ -287,11 +288,11 @@ class TrainingStatus:
     if lastCheckpoint is None:
       self.startEpoch = 0
     else:
-      print "Last checkpoint :", lastCheckpoint
+      print ("Last checkpoint :", lastCheckpoint)
       self.startEpoch = int(lastCheckpoint.split("-")[-1])
       self.saver.restore(sess, lastCheckpoint)
 
-    print "startEpoch = ", self.startEpoch
+    print ("startEpoch = ", self.startEpoch)
 
     self.logwrite_interval = logwrite_interval
     self.eta_interval = eta_interval
@@ -335,7 +336,7 @@ class TrainingStatus:
   def tocEpoch(self, sess, e, validLoss=0):
     if (e + 1) % self.save_interval == 0 or e == self.num_epochs - 1:
       self.saver.save(sess, self.model_dir, global_step = e + 1)
-      print "model saved to {}".format(self.model_dir)
+      print ("model saved to {}".format(self.model_dir))
 
     
     lines = open(self.save_dir + "/avgloss.txt", "r").readlines()

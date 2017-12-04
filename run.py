@@ -75,11 +75,11 @@ class Speech(TFBase):
       audio = np.load(self.training_dir + "/audio/normalized-cep13/" + files[i] + ".wav.npy") 
       audiodiff = audio[1:,:-1] - audio[:-1, :-1]
 
-      print files[i], audio.shape, tp
+      print (files[i], audio.shape, tp)
       timestamps = audio[:, -1]
 
       for dnum in dnums:
-        print dnum 
+        print (dnum )
         fids = readCVFloatMat(self.training_dir + dnum + "/frontalfidsCoeff_unrefined.bin")
         if not os.path.exists(self.training_dir + dnum + "/startframe.txt"):
           startframe = 1
@@ -161,7 +161,7 @@ class Speech(TFBase):
           else:
             newinps[key].append(inps[key][i])
             newoutps[key].append(outps[key][i])
-    print "load preprocessed", len(newinps), len(newoutps)
+    print ("load preprocessed", len(newinps), len(newoutps))
     return newinps, newoutps
 
 
@@ -189,7 +189,7 @@ class Speech(TFBase):
       os.mkdir("results/")
 
     f = open("results/" + self.args.input2 + "_" + args.save_dir + ".txt", "w")
-    print "output to results/" + self.args.input2 + "_" + args.save_dir + ".txt"
+    print ("output to results/" + self.args.input2 + "_" + args.save_dir + ".txt")
     f.write("%d %d\n" % (len(inp), self.dimout + 1))
     fetches = []
     fetches.append(self.output)
