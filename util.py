@@ -213,7 +213,7 @@ class TFBase(object):
     self.sample(sess, saved_args, raw, pt)
 
   def train(self):
-    with open(os.path.join("save/" + self.args.save_dir, 'config.pkl'), 'w') as f:
+    with open(os.path.join("save/" + self.args.save_dir, 'config.pkl'), 'wb') as f:
       cPickle.dump(self.args, f)
 
     with tf.Session() as sess:
