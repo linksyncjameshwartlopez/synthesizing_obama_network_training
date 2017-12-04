@@ -127,7 +127,9 @@ class Speech(TFBase):
       output_w = tf.get_variable("output_w", [args.rnn_size, self.dimout])
       output_b = tf.get_variable("output_b", [self.dimout])
 
-    inputs = tf.split(1, args.seq_length, self.input_data)
+    # Old code
+    #inputs = tf.split(1, args.seq_length, self.input_data)
+    inputs = tf.split(self.input_data, args.seq_length, 1)
     inputs = [tf.squeeze(input_, [1]) for input_ in inputs]
 
     outputs, states = tf.nn.seq2seq.rnn_decoder(inputs, self.initial_state, self.network, loop_function=None, scope='rnnlm')
