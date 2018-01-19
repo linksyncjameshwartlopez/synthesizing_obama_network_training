@@ -50,7 +50,7 @@ class MFCC(object):
         self.alpha = alpha
 
         # Build mel filter matrix
-        self.filters = numpy.zeros((nfft/2+1,nfilt), 'd')
+        self.filters = numpy.zeros((int(nfft/2+1),nfilt), 'd')
         dfreq = float(samprate) / nfft
         if upperf > samprate/2:
             raise(Exception,
