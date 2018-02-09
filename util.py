@@ -162,7 +162,7 @@ class TFBase(object):
     # returns a randomised, seq_length sized portion of the training data
     x_batch = []
     y_batch = []
-    for i in xrange(self.args.batch_size):
+    for i in range(self.args.batch_size):
       inp = self.inps[key][self.pointer[key]]
       outp = self.outps[key][self.pointer[key]]
 
@@ -186,6 +186,7 @@ class TFBase(object):
 
 
   def test(self):
+    print("test method running")
     # only use save_dir from args
     save_dir = self.args.save_dir
 
@@ -213,17 +214,19 @@ class TFBase(object):
     self.sample(sess, saved_args, raw, pt)
 
   def train(self):
+    print("training method is running")
     with open(os.path.join("save/" + self.args.save_dir, 'config.pkl'), 'wb') as f:
       cPickle.dump(self.args, f)
 
     with tf.Session() as sess:
       model = self.model(self.args)
 
-      tf.initialize_all_variables().run()
+      # tf.initialize_all_variables().run()
+      tf.global_variables_initializer().run()
       ts = TrainingStatus(sess, self.args.num_epochs, self.num_batches["training"], save_interval = self.args.save_every, graph = sess.graph, save_dir = "save/" + self.args.save_dir)
 
       print ("training batches: ", self.num_batches["training"])
-      for e in xrange(ts.startEpoch, self.args.num_epochs):
+      for e in range(ts.startEpoch, self.args.num_epochs):
         sess.run(tf.assign(self.lr, self.args.learning_rate * (self.args.decay_rate ** e)))
         self.reset_batch_pointer("training")
         self.reset_batch_pointer("validation")
@@ -241,7 +244,7 @@ class TFBase(object):
         for i, (c, m) in enumerate(self.initial_state):
           feed_dict[c], feed_dict[m] = state[i]
 
-        for b in xrange(self.num_batches["training"]):
+        for b in range(self.num_batches["training"]):
           ts.tic()
           x, y = self.next_batch()
 
@@ -257,7 +260,7 @@ class TFBase(object):
         if self.num_batches["validation"] > 0:
           fetches = []
           fetches.append(self.cost)
-          for b in xrange(self.num_batches["validation"]):
+          for b in range(self.num_batches["validation"]):
             x, y = self.next_batch("validation")
 
             feed_dict[self.input_data] = x
@@ -282,7 +285,8 @@ class TrainingStatus:
     self.save_dir = save_dir
     self.model_dir = os.path.join(save_dir, 'model.ckpt')
     #self.saver = tf.train.Saver(tf.all_variables(), max_to_keep = 0)
-    self.saver = tf.train.Saver(tf.all_variables())
+    # self.saver = tf.train.Saver(tf.all_variables())
+    self.saver = tf.train.Saver(tf.global_variables())
 
     lastCheckpoint = tf.train.latest_checkpoint(save_dir) 
     if lastCheckpoint is None:
