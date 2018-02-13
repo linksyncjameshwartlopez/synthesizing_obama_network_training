@@ -26,7 +26,7 @@ class Speech(TFBase):
     self.parser.add_argument('--input', type=str, default='',
                        help='input for generation')
     self.parser.add_argument('--input2', type=str, default='',
-                       help='input for any mfcc wav file')
+                       help='input for any mfcc wav file name withou extension that was located in audio/normalize-cep13')
     self.parser.add_argument('--guy', type=str, default='Obama2',
                        help='dataset')
     self.parser.add_argument('--normalizeoutput', action='store_true')
