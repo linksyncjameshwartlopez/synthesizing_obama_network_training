@@ -190,7 +190,7 @@ class TFBase(object):
     # only use save_dir from args
     save_dir = self.args.save_dir
 
-    with open(os.path.join("save/" + save_dir, 'config.pkl')) as f:
+    with open(os.path.join("save/" + save_dir, 'config.pkl'), "rb") as f:
       saved_args = cPickle.load(f)
 
     if len(saved_args.usetrainingof):
